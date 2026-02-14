@@ -1,0 +1,610 @@
+/* Scene 1: Jazz Dinner Styles */
+
+#scene-1 {
+    background: radial-gradient(circle at 50% 30%, #1a1010 0%, #050505 80%);
+    perspective: 1000px;
+    overflow: hidden;
+}
+
+#scene-1::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIj48ZmlsdGVyIGlkPSJ4Ij48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iMC42NSIgbnVtT2N0YXZlcz0iMyIgc3RpdGNoVGlsZXM9InN0aXRjaCIvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbHRlcj0idXJsKCN4KSIgb3BhY2l0eT0iMC4wNSIvPjwvc3ZnPg==');
+    opacity: 0.15;
+    pointer-events: none;
+    z-index: 2;
+    /* Film Grain Overlay */
+}
+
+/* Light Source Simulation */
+.candle-glow {
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60vw;
+    height: 60vh;
+    background: radial-gradient(circle, rgba(255, 160, 60, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 1;
+    mix-blend-mode: screen;
+    opacity: 0;
+    /* Animated in via GSAP */
+}
+
+/* Container Layout */
+.dinner-container {
+    display: flex;
+    justify-content: flex-start;
+    /* Align to left */
+    align-items: center;
+    padding-left: 10%;
+    /* Spacing from left edge */
+    perspective: 1000px;
+    position: relative;
+    z-index: 10;
+}
+
+/* Table Surface (Holds the Book) */
+.table-surface {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 50vh;
+    z-index: 20;
+    display: flex;
+    justify-content: flex-end;
+    /* Desktop: Book on Right */
+    align-items: center;
+    padding-right: 15%;
+    perspective: 1000px;
+    pointer-events: none;
+    /* Allow clicks to pass through empty areas */
+}
+
+/* Enable pointer events for children (Book) */
+.table-surface>* {
+    pointer-events: auto;
+}
+
+/* Left: Typography & Intro */
+.dinner-text {
+    opacity: 0;
+    transform: translateY(20px);
+    margin-top: clamp(5vh, 15vh, 20vh);
+    width: 100%;
+}
+
+.dinner-title {
+    font-family: var(--font-serif-title);
+    font-size: clamp(2.5rem, 8vw, 5rem);
+    line-height: 1.1;
+    color: var(--color-accent-gold);
+    margin-bottom: 1.5rem;
+    text-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
+}
+
+.dinner-desc {
+    font-family: var(--font-serif-body);
+    font-size: clamp(1rem, 3vw, 1.4rem);
+    max-width: min(400px, 80vw);
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 2rem;
+}
+
+/* Mini Slideshow */
+.mini-slideshow {
+    position: relative;
+    width: 100%;
+    padding: 3rem 5%;
+    z-index: 30;
+    opacity: 0;
+    animation: fadeInSlideshow 1.5s forwards 2s;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+@keyframes fadeInSlideshow {
+    to {
+        opacity: 1;
+    }
+}
+
+.slides-track {
+    display: flex;
+    gap: 15px;
+    overflow-x: auto;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(10px);
+    border-radius: 10px;
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-accent-gold) rgba(255, 255, 255, 0.1);
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.slides-track::-webkit-scrollbar {
+    height: 8px;
+}
+
+.slides-track::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+
+.slides-track::-webkit-scrollbar-thumb {
+    background: var(--color-accent-gold);
+    border-radius: 4px;
+}
+
+.slides-track img {
+    height: 150px;
+    width: auto;
+    border-radius: 8px;
+    border: 2px solid rgba(212, 175, 55, 0.3);
+    transition: transform 0.3s, border-color 0.3s;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.slides-track img:hover {
+    transform: scale(1.05);
+    border-color: var(--color-accent-gold);
+}
+
+/* --- Dessert Book --- */
+.dinner-book {
+    position: relative;
+    width: 260px;
+    /* Smaller size */
+    height: 380px;
+    transform-style: preserve-3d;
+    perspective: 2000px;
+    cursor: pointer;
+    transition: transform 1s cubic-bezier(0.645, 0.045, 0.355, 1);
+    z-index: 50;
+    transform: rotateX(20deg) rotateY(0deg) rotateZ(-10deg);
+    /* Lying on table */
+}
+
+.dinner-book.open {
+    transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg) translateY(-50px);
+    /* Lift up slightly */
+    cursor: default;
+}
+
+/* Book Cover */
+.book-cover {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    transform-origin: left center;
+    transition: transform 1s cubic-bezier(0.645, 0.045, 0.355, 1);
+    transform-style: preserve-3d;
+    z-index: 10;
+}
+
+.dinner-book.open .book-cover {
+    transform: rotateY(-180deg);
+}
+
+.book-front {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: #3e2723;
+    /* Dark Leather Brown */
+    border-radius: 5px 15px 15px 5px;
+    box-shadow: inset 5px 0 10px rgba(0, 0, 0, 0.5), 5px 10px 20px rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backface-visibility: hidden;
+    overflow: hidden;
+}
+
+.book-skin {
+    border: 2px solid var(--color-accent-gold);
+    padding: 40px;
+    width: 90%;
+    height: 90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background: radial-gradient(circle at center, #5d4037 0%, #3e2723 100%);
+}
+
+.book-title {
+    font-family: var(--font-serif-title);
+    font-size: 3.5rem;
+    color: var(--color-accent-gold);
+    line-height: 1;
+    margin-bottom: 2rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.book-subtitle {
+    font-family: var(--font-serif-body);
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.6);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+}
+
+.book-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: #3e2723;
+    border-radius: 5px 15px 15px 5px;
+    transform: rotateY(180deg);
+    backface-visibility: hidden;
+    box-shadow: -5px 10px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* Book Pages */
+.book-page {
+    position: absolute;
+    top: 5px;
+    width: 390px;
+    height: 490px;
+    background: #f5e6d3;
+    /* Cream Paper */
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.1);
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    padding: 30px;
+}
+
+.left-page {
+    left: 0;
+    border-radius: 5px 0 0 5px;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: radial-gradient(circle at right, #fff8e1 0%, #f5e6d3 100%);
+    display: none;
+    /* Only visible when open? Or handled by z-index? */
+    /* Actually left page should be the "inside" of the front cover visually, or a separate page */
+    /* Simplified: "Left Page" acts as the static base under the cover? No, cover rotates. */
+    /* Let's make Left Page attached to the cover's back? */
+}
+
+/* Revising standard 3D book model:
+   Container = Spine
+   Cover rotates -180
+   Right Page stays static
+*/
+
+.book-cover .book-back {
+    /* Inside of Front Cover */
+    background: #f5e6d3;
+    background: url('src/assets/images/paper-texture.jpg'), linear-gradient(to right, #e0cda9, #f5e6d3);
+    /* If we don't have texture, fallback to gradient */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #3e2723;
+}
+
+.book-back::after {
+    content: "Les Desserts";
+    font-family: var(--font-serif-title);
+    font-size: 2.2rem;
+    color: #5d4037;
+    /* Remove scaleX(-1) if it was causing mirroring, or keep if needed. 
+       Usually if we rotateY(180) the div, the text is backwards. 
+       So we need to rotateY(180) the text too to bring it back? 
+       Or just scaleX(-1). 
+       If user says it IS inverted, I will toggle whatever it was.
+       It was scaleX(-1). I will remove it to see if natural rotation works, 
+       or change to rotateY(180deg).
+    */
+    transform: rotateY(180deg);
+}
+
+/* Actually, simpler to just put content in book-back and un-flip it there if needed */
+
+
+.right-page {
+    right: 0;
+    border-radius: 0 5px 5px 0;
+    background: #fafafa;
+    z-index: 1;
+    /* Behind cover initially */
+}
+
+/* Dessert Grid */
+.dessert-grid {
+    display: grid;
+    grid-template-rows: repeat(3, 1fr);
+    gap: 1rem;
+    height: 100%;
+}
+
+.dessert-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 10px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.dessert-item:hover {
+    background: rgba(212, 175, 55, 0.1);
+}
+
+.dessert-img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid var(--color-accent-gold);
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.dessert-label {
+    font-family: var(--font-serif-body);
+    font-size: 1.5rem;
+    color: #4a0404;
+    font-weight: bold;
+}
+
+/* Visibility Logic */
+.left-page,
+.right-page {
+    opacity: 0;
+    transition: opacity 0.5s 0.2s;
+    /* Delay for cover opening */
+}
+
+.dinner-book.open .left-page,
+.dinner-book.open .right-page {
+    opacity: 1;
+}
+
+/* Fix for Left Page Logic:
+   The "Left Page" in this DOM structure is static.
+   Ideally, it should be on the back of the cover.
+   But for simplicity, let's keep it static and just reveal it.
+*/
+.left-page {
+    transform: translateX(-100%);
+    /* Move it to the left of the spine/center */
+    z-index: 0;
+    /* Actually with perspective, we want it side-by-side */
+    /* Let's adjust: Book width is 400. open => 800 width? */
+}
+
+/* IMPROVED BOOK OPENING LOGIC */
+/* Duplicate block removed/merged */
+
+.dinner-book.open {
+    /* Shift right to center the open spread */
+    transform: translateX(50%) rotateX(0deg);
+    /* Wait, rotateX(0) makes it flat to screen. */
+}
+
+.book-page.left-page {
+    /* This is actually the "inner left".
+      It should be attached to cover? Or just sit to the left.
+   */
+    left: -255px;
+    /* Adjust for new width + gap */
+    top: 5px;
+    width: 250px;
+    height: 370px;
+    border-radius: 5px 0 0 5px;
+    opacity: 0;
+    /* Hidden when closed */
+}
+
+.book-page.right-page {
+    left: 0;
+    top: 5px;
+    width: 250px;
+    height: 370px;
+    opacity: 1;
+    /* Always there, just covered */
+    background: #fff;
+    border-radius: 0 5px 5px 0;
+}
+
+/* --- Poetry Panel --- */
+.poetry-panel {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 60%;
+    /* Right of the centered dessert */
+    transform: translateY(-50%);
+    width: 400px;
+    padding: 3rem;
+    background: rgba(10, 5, 5, 0.85);
+    backdrop-filter: blur(10px);
+    border-left: 1px solid var(--color-accent-gold);
+    z-index: 101;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+}
+
+.poetry-title {
+    font-family: var(--font-serif-title);
+    font-size: 2.5rem;
+    color: var(--color-accent-gold);
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.05em;
+}
+
+.poetry-lines p {
+    font-family: var(--font-serif-body);
+    font-size: 1.5rem;
+    color: var(--color-text-primary);
+    line-height: 1.8;
+    margin-bottom: 0.8rem;
+    font-style: italic;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+
+/* --- Existing Interactions (Maintained) --- */
+
+
+/* Responsive */
+/* Old media query removed */
+
+/* --- Responsive Design --- */
+
+/* --- Responsive Design --- */
+
+/* Tablet (max-width: 1024px) */
+@media (max-width: 1024px) {
+    .dinner-container {
+        padding-left: 5%;
+    }
+
+    .table-surface {
+        padding-right: 5%;
+    }
+
+    .dinner-book {
+        width: clamp(200px, 25vw, 240px);
+        height: clamp(300px, 35vw, 350px);
+    }
+}
+
+/* Mobile (max-width: 768px) */
+@media (max-width: 768px) {
+    #scene-1 {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding-bottom: 0;
+    }
+
+    .dinner-container {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 2rem 1rem;
+        height: auto;
+        min-height: 40vh;
+        z-index: 10;
+        margin-top: 5vh;
+    }
+
+    .dinner-text {
+        margin-top: 0;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .dinner-desc {
+        margin: 0 auto 1.5rem auto;
+    }
+
+    /* Book at Mid/Bottom */
+    .table-surface {
+        position: relative;
+        height: 50vh;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding-right: 0;
+        margin-top: auto;
+    }
+
+    .dinner-book {
+        transform: rotateX(15deg) rotateY(0deg) rotateZ(0deg);
+        width: 180px;
+        height: 270px;
+        margin-bottom: 5vh;
+    }
+
+    /* Adjust open state for mobile */
+    .dinner-book.open {
+        transform: translateY(-20px) scale(0.85);
+        z-index: 100;
+    }
+
+    .book-title {
+        font-size: 2rem;
+    }
+
+    .book-subtitle {
+        font-size: 1.5rem;
+    }
+
+    /* Pages need to adjust since we changed book width */
+    .book-page.left-page {
+        left: -185px;
+        width: 180px;
+        height: 260px;
+    }
+
+    .book-page.right-page {
+        width: 180px;
+        height: 260px;
+    }
+
+    .poetry-panel {
+        left: 10%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 90%;
+        padding: 2rem 1.5rem;
+    }
+
+    .poetry-title {
+        font-size: 1.8rem;
+    }
+
+    /* Fix Dessert Grid for Mobile */
+    .book-page {
+        padding: 15px 10px;
+    }
+
+    .dessert-img {
+        width: 45px;
+        height: 45px;
+    }
+
+    .dessert-label {
+        font-size: 0.9rem;
+    }
+
+    .dessert-item {
+        padding: 5px;
+        gap: 8px;
+    }
+
+    /* Slideshow Mobile Adjustments */
+    .mini-slideshow {
+        padding: 1.5rem 1%;
+    }
+
+    .slides-track {
+        gap: 8px;
+        padding: 8px;
+    }
+
+    .slides-track img {
+        height: 80px;
+    }
+}

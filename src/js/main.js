@@ -1,20 +1,21 @@
 
-// Import Scene Modules (assuming module support)
-import Scene1 from './Scene1.js';
+import DinnerScene from './DinnerScene.js';
 import Scene2 from './Scene2.js';
 import Scene3 from './Scene3.js';
+import FooterScene from './FooterScene.js';
 import AudioController from './AudioController.js';
 
 class Main {
     constructor() {
         this.scenes = {
-            scene1: new Scene1(),
+            scene1: new DinnerScene(),
             scene2: new Scene2(),
-            scene3: new Scene3()
+            scene3: new Scene3(),
+            footer: new FooterScene()
         };
         this.audioController = new AudioController();
         this.currentScene = null;
-        
+
         this.init();
     }
 
@@ -43,15 +44,17 @@ class Main {
     hideLoader() {
         const loader = document.getElementById('loader');
         const progress = document.querySelector('.loader-progress');
-        
+
         if (progress) {
-            gsap.to(progress, { width: '100%', duration: 0.5, onComplete: () => {
-                gsap.to(loader, {
-                    opacity: 0,
-                    duration: 1,
-                    onComplete: () => loader.classList.add('hidden')
-                });
-            }});
+            gsap.to(progress, {
+                width: '100%', duration: 0.5, onComplete: () => {
+                    gsap.to(loader, {
+                        opacity: 0,
+                        duration: 1,
+                        onComplete: () => loader.classList.add('hidden')
+                    });
+                }
+            });
         }
     }
 
@@ -63,6 +66,7 @@ class Main {
         this.scenes.scene1.init();
         this.scenes.scene2.init();
         this.scenes.scene3.init();
+        this.scenes.footer.init();
 
         // Setup global scroll-based scene transitions or logic if needed
         // For now, each scene handles its own internal logic.
@@ -72,13 +76,13 @@ class Main {
     observeScenes() {
         // logic to detect which scene is active for audio crossfading
         const sections = document.querySelectorAll('.scene');
-        
+
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     const sceneId = entry.target.id; // e.g., 'scene-1'
                     const sceneKey = 'scene' + sceneId.split('-')[1]; // 'scene1'
-                    
+
                     console.log(`Entering ${sceneKey}`);
                     // Tell audio controller to switch theme, etc.
                     this.audioController.switchTheme(sceneKey);
@@ -92,7 +96,7 @@ class Main {
     toggleAudio() {
         const btn = document.getElementById('audio-toggle');
         const isMuted = this.audioController.toggleMute();
-        
+
         if (btn) {
             const textSpan = btn.querySelector('.audio-text');
             if (textSpan) textSpan.textContent = isMuted ? "Sound Off" : "Sound On";
@@ -103,5 +107,5 @@ class Main {
 
 // Start
 window.addEventListener('DOMContentLoaded', () => {
-   window.app = new Main();
+    window.app = new Main();
 });

@@ -1,0 +1,445 @@
+/* Scene 2: Art Gallery Styles */
+
+#scene-2 {
+    background-color: #050505;
+    perspective: 1500px;
+    /* Deep perspective for 3D feel */
+    overflow: hidden;
+    height: 350vh;
+    /* Increased for slideshow space */
+    /* Extra height for scroll duration */
+}
+
+.gallery-viewport {
+    position: fixed;
+    /* Fixed within the scene view for scroll logic */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    transform-style: preserve-3d;
+    transform-style: preserve-3d;
+    pointer-events: none;
+    /* Let clicks pass to active elements */
+}
+
+/* Gallery Layout Title */
+.gallery-title {
+    position: absolute;
+    top: 15vh;
+    width: 100%;
+    text-align: center;
+    z-index: 100;
+    pointer-events: none;
+    transform: translateZ(0);
+    /* Ensure it's static relative to viewport? No, we want it to scroll away or stay? */
+    /* If it's in viewport (fixed), it stays. */
+}
+
+.gallery-title span {
+    display: inline-block;
+    font-family: var(--font-serif-title);
+    font-size: 4rem;
+    color: var(--color-text-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 1.5s forwards 0.5s;
+}
+
+.gallery-title .subtitle {
+    font-family: var(--font-serif-body);
+    font-size: 2rem;
+    text-transform: none;
+    font-style: italic;
+    color: var(--color-accent-gold);
+    display: block;
+    margin-top: 10px;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 1.5s forwards 1s;
+}
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* The "World" moving towards the camera */
+.gallery-corridor {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform-style: preserve-3d;
+    width: 0;
+    height: 0;
+}
+
+/* Floor Reflection */
+.gallery-floor {
+    position: absolute;
+    top: 500px;
+    left: -50vw;
+    width: 100vw;
+    height: 4000px;
+    background: linear-gradient(to bottom, #111 0%, #000 80%);
+    transform: rotateX(90deg) translateZ(0px);
+    /* Flat floor */
+    transform-origin: center top;
+    opacity: 0.3;
+    mask-image: linear-gradient(to bottom, transparent 0%, black 20%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 20%);
+}
+
+/* Artwork Frames */
+.artwork {
+    position: absolute;
+    width: 400px;
+    height: 500px;
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    transform-style: preserve-3d;
+    overflow: hidden;
+    pointer-events: auto;
+    /* Interactable */
+    cursor: pointer;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.6s ease;
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+}
+
+.artwork:hover {
+    border-color: var(--color-text-primary);
+    box-shadow: 0 0 50px rgba(255, 255, 255, 0.1);
+}
+
+/* Artwork Content */
+.artwork-inner {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    filter: grayscale(100%) brightness(0.6);
+    transition: filter 0.8s ease;
+}
+
+.artwork:hover .artwork-inner {
+    filter: grayscale(0%) brightness(1);
+}
+
+.artwork-caption {
+    position: absolute;
+    bottom: -80px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: all 0.5s ease;
+}
+
+.artwork:hover .artwork-caption {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.artwork-title {
+    font-family: var(--font-serif-title);
+    color: var(--color-text-primary);
+    font-size: 1.5rem;
+}
+
+.artwork-artist {
+    font-family: var(--font-sans);
+    color: var(--color-text-secondary);
+    font-size: 0.8rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+}
+
+/* Light Beams (Pseudo-elements on frames) */
+.artwork::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s;
+    mix-blend-mode: screen;
+}
+
+.artwork:hover::after {
+    opacity: 1;
+}
+
+/* Fullscreen Modal */
+.gallery-modal {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #050505;
+    z-index: 9999;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    opacity: 0;
+    visibility: hidden;
+    transition: 0.3s ease;
+}
+
+.gallery-modal.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-content-wrapper {
+    position: relative;
+    max-width: min(900px, 90vw);
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#modal-img-placeholder {
+    width: 100%;
+    max-height: 70vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-img {
+    max-height: 60vh;
+    max-width: 100%;
+    object-fit: contain;
+    box-shadow: 0 20px 80px rgba(0, 0, 0, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: #111;
+}
+
+/* Modal Typography */
+.modal-info {
+    text-align: center;
+    margin-top: 1.5rem;
+    width: 100%;
+}
+
+.modal-info h3 {
+    font-family: var(--font-serif-title);
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    margin: 0.5rem 0;
+}
+
+.modal-info p {
+    font-family: var(--font-sans);
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 0.9rem;
+}
+
+/* Nav Controls */
+.nav-btn {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 3rem;
+    cursor: pointer;
+    transition: color 0.3s;
+    z-index: 510;
+    padding: 20px;
+}
+
+.nav-btn:hover {
+    color: var(--color-accent-gold);
+}
+
+.nav-btn.prev {
+    left: 2vw;
+}
+
+.nav-btn.next {
+    right: 2vw;
+}
+
+/* Small Close Button at Bottom */
+.close-view-btn {
+    margin-top: 2rem;
+    background: none;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.6);
+    padding: 8px 24px;
+    font-family: var(--font-sans);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    cursor: pointer;
+    transition: all 0.3s;
+    border-radius: 4px;
+}
+
+.close-view-btn:hover {
+    border-color: var(--color-accent-gold);
+    color: var(--color-accent-gold);
+    background: rgba(212, 175, 55, 0.05);
+}
+
+/* Scroll Lock */
+body.no-scroll {
+    overflow: hidden;
+}
+
+/* --- Responsive Design --- */
+
+/* Tablet (max-width: 1024px) */
+@media (max-width: 1024px) {
+    .artwork {
+        width: 300px;
+        height: 400px;
+    }
+
+    .gallery-title span {
+        font-size: 3rem;
+    }
+
+    .gallery-title .subtitle {
+        font-size: 1.5rem;
+    }
+}
+
+/* Mobile (max-width: 768px) */
+@media (max-width: 768px) {
+    .artwork {
+        width: 260px;
+        height: 360px;
+    }
+
+    .gallery-title {
+        top: 20vh;
+        /* Move down slightly */
+    }
+
+    .gallery-title span {
+        font-size: 2.2rem;
+    }
+
+    .gallery-title .subtitle {
+        font-size: 1.2rem;
+    }
+
+    .modal-img {
+        max-width: 95vw;
+        max-height: 60vh;
+    }
+}
+
+/* --- Slideshow Feature --- */
+.slideshow-container {
+    position: absolute;
+    /* Relative to viewport? Or scene? */
+    /* If we want it to scroll into view, it should be part of the flow? 
+       But Scene 2 uses fixed viewport and simulated 3D scroll which ends.
+       So we should make this appear fixed on top of the 3D scene when we reach the end.
+    */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) translateY(100px);
+    /* Start lower */
+    width: 90%;
+    max-width: 1000px;
+    opacity: 0;
+    visibility: hidden;
+    /* For autoAlpha */
+    z-index: 200;
+    text-align: center;
+    pointer-events: none;
+    /* Initially none */
+}
+
+/* When active, pointer events auto? GSAP sets opacity. */
+
+.slideshow-track {
+    display: flex;
+    overflow-x: auto;
+    gap: 20px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    backdrop-filter: blur(5px);
+
+    /* Hide scrollbar */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    pointer-events: auto;
+    /* Allow horizontal scroll */
+}
+
+.slideshow-track::-webkit-scrollbar {
+    display: none;
+}
+
+.slide-item {
+    flex: 0 0 auto;
+    width: 300px;
+    height: 200px;
+    border-radius: 5px;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid transparent;
+    transition: transform 0.3s, border-color 0.3s;
+}
+
+.slide-item:hover {
+    transform: scale(1.05);
+    border-color: var(--color-accent-gold);
+}
+
+.slide-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.8);
+    transition: filter 0.3s;
+}
+
+.slide-item:hover img {
+    filter: brightness(1);
+}
+
+.slideshow-caption {
+    font-family: var(--font-serif-title);
+    font-size: 3rem;
+    color: var(--color-accent-gold);
+    margin-top: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    text-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+}
+
+/* Mobile Adjustments for Slideshow */
+@media (max-width: 768px) {
+    .slide-item {
+        width: 200px;
+        height: 140px;
+    }
+
+    .slideshow-caption {
+        font-size: 2rem;
+    }
+}

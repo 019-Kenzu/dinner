@@ -1,27 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dinner With You - An Interactive Cinematic Journey</title>
-    
+    <meta name="description" content="Dinner With You - An Interactive Cinematic Journey">
+    <meta name="keywords" content="Dinner With You, An Interactive Cinematic Journey">
+    <meta name="author" content="Captain Ivander">
+    <!-- web icon -->
+    <link rel="icon" href="src/assets/icon.png">
+    <title>Dinner With You</title>
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Inter:wght@200;300;400&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-    
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Inter:wght@200;300;400&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap"
+        rel="stylesheet">
+
     <!-- Styles -->
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/scene1.css">
-    <link rel="stylesheet" href="css/scene2.css">
-    <link rel="stylesheet" href="css/scene3.css">
+    <link rel="stylesheet" href="src/css/style.css?v=2">
+    <link rel="stylesheet" href="src/css/scene1.css?v=2">
+    <link rel="stylesheet" href="src/css/scene2.css?v=2">
+    <link rel="stylesheet" href="src/css/scene3.css?v=2">
+    <link rel="stylesheet" href="src/css/scene-footer.css?v=2">
 
     <!-- External Libraries (CDNs) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
+
 <body>
+
+    <!-- Floating Decoration -->
+    <div class="floating-decor">
+        <img src="src/assets/images/decoration/candle.png" class="float-item candle">
+        <img src="src/assets/images/decoration/flowers.png" class="float-item flowers">
+        <img src="src/assets/images/decoration/love-letter.png" class="float-item letter">
+    </div>
 
     <!-- Loading Overlay -->
     <div id="loader" class="loader">
@@ -39,13 +56,24 @@
 
     <!-- Main Container -->
     <main id="app">
-        
+
         <!-- Scene 1: Jazz Dinner -->
         <section id="scene-1" class="scene" data-scene="dinner">
             <div class="scene-content">
                 <!-- Content injected by Scene1.js -->
             </div>
             <canvas id="canvas-scene-1" class="webgl-canvas"></canvas>
+        </section>
+
+        <!-- Slideshow Section (Between Scenes) -->
+        <section id="slideshow-section" class="mini-slideshow">
+            <div class="slides-track">
+                <img src="src/assets/images/slide-show/slide1.png" alt="Memory 1">
+                <img src="src/assets/images/slide-show/slide2.png" alt="Memory 2">
+                <img src="src/assets/images/slide-show/slide3.png" alt="Memory 3">
+                <img src="src/assets/images/slide-show/slide4.png" alt="Memory 4">
+                <img src="src/assets/images/slide-show/slide5.png" alt="Memory 5">
+            </div>
         </section>
 
         <!-- Scene 2: Art Gallery -->
@@ -66,10 +94,162 @@
             </div>
         </section>
 
+        <!-- Footer Poetry Section -->
+        <section id="footer-poetry" class=" scene footer-poetry">
+            <canvas id="particle-canvas" class="particle-canvas"></canvas>
+
+            <div class="poetry-slideshow">
+                <div class="slideshow-image slide-1"></div>
+                <div class="slideshow-image slide-2"></div>
+                <div class="slideshow-image slide-3"></div>
+            </div>
+
+            <div class="poetry-text-container">
+                <p class="typewriter-poem"></p>
+                <span class="typewriter-cursor">|</span>
+            </div>
+
+            <div class="profile-cards">
+                <div class="profile-card male-card">
+                    <div class="profile-image"></div>
+                    <h3 class="profile-name">Captain Ivander</h3>
+                </div>
+                <div class="profile-card female-card">
+                    <div class="profile-image"></div>
+                    <h3 class="profile-name">Sherlyn Kaluna Serafina</h3>
+                </div>
+            </div>
+        </section>
+
     </main>
 
+
     <!-- Scripts -->
-    <!-- Define global variables or config here if needed -->
-    <script type="module" src="js/main.js"></script>
+    <!-- Inline footer animation script -->
+    <script>
+        console.log("=== FOOTER ANIMATION SCRIPT LOADING ===");
+
+        // Wait for DOM and GSAP to be ready
+        window.addEventListener('load', function () {
+            console.log("Page loaded - Setting up footer animations...");
+
+            // Make sure GSAP and ScrollTrigger are available
+            if (typeof gsap === 'undefined') {
+                console.error("GSAP not loaded!");
+                return;
+            }
+
+            // Register ScrollTrigger
+            gsap.registerPlugin(ScrollTrigger);
+
+            // Find all footer elements
+            const poemElement = document.querySelector('.typewriter-poem');
+            const cursor = document.querySelector('.typewriter-cursor');
+            const slide1 = document.querySelector('.slide-1');
+            const slide2 = document.querySelector('.slide-2');
+            const slide3 = document.querySelector('.slide-3');
+            const profileCards = document.querySelectorAll('.profile-card');
+
+            console.log("Footer elements found:", {
+                poemElement: !!poemElement,
+                cursor: !!cursor,
+                slide1: !!slide1,
+                slide2: !!slide2,
+                slide3: !!slide3,
+                profileCards: profileCards.length
+            });
+
+            // Poetry text
+            const poem = `In candlelight, our shadows dance,
+Each moment feels like sweet romance.
+Through art and jazz, our story grows,
+A symphony that only love knows.
+
+With every smile, with every glance,
+We write our tale of pure romance.`;
+
+            let currentChar = 0;
+            let isTyping = false;
+
+            // Typewriter function
+            function startTypewriter() {
+                if (isTyping || !poemElement) return;
+                isTyping = true;
+                console.log("✓ Starting typewriter animation...");
+
+                function type() {
+                    if (currentChar < poem.length) {
+                        poemElement.textContent = poem.substring(0, currentChar + 1);
+                        currentChar++;
+
+                        const delay = poem[currentChar - 1] === '\n' ? 500 : Math.random() * 50 + 30;
+                        setTimeout(type, delay);
+                    } else {
+                        console.log("✓ Typewriter complete!");
+                        // Show profile cards after typing
+                        setTimeout(() => {
+                            if (cursor) cursor.style.display = 'none';
+                            gsap.to('.profile-card', {
+                                opacity: 1,
+                                y: 0,
+                                duration: 1,
+                                stagger: 0.3,
+                                ease: "back.out(1.2)"
+                            });
+                        }, 500);
+                    }
+                }
+
+                type();
+            }
+
+            // Set initial states
+            gsap.set('.slide-1', { x: -100, opacity: 0 });
+            gsap.set('.slide-2', { x: 100, opacity: 0 });
+            gsap.set('.slide-3', { x: -100, opacity: 0 });
+            gsap.set('.profile-card', { opacity: 0, y: 50 });
+
+            // Create ScrollTrigger animation
+            ScrollTrigger.create({
+                trigger: "#footer-poetry",
+                start: "top 80%",
+                onEnter: () => {
+                    console.log("✓ Footer entered viewport - starting animations!");
+
+                    // Animate slideshow images
+                    const tl = gsap.timeline();
+
+                    tl.to('.slide-1', {
+                        opacity: 1,
+                        x: 0,
+                        duration: 2,
+                        ease: "power2.out"
+                    })
+                        .to('.slide-2', {
+                            opacity: 1,
+                            x: 0,
+                            duration: 2,
+                            ease: "power2.out"
+                        }, "-=0.5")
+                        .to('.slide-3', {
+                            opacity: 1,
+                            x: 0,
+                            duration: 2,
+                            ease: "power2.out"
+                        }, "-=0.5")
+                        .add(() => {
+                            startTypewriter();
+                        }, "+=0.5");
+                },
+                once: true
+            });
+
+            console.log("=== FOOTER ANIMATIONS READY ===");
+        });
+    </script>
+
+    <!-- Main module script with timestamp cache busting -->
+    <script type="module" src="src/js/main.js?v=5"></script>
 </body>
+
 </html>

@@ -43,6 +43,47 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
+.floating-decor {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.float-item {
+    position: absolute;
+    width: 120px;
+    opacity: 0.8;
+    animation: floaty 6s ease-in-out infinite;
+}
+
+.candle {
+    top: 20%;
+    left: 10%;
+    animation-delay: 0s;
+}
+
+.flowers {
+    top: 80%;
+    right: 12%;
+    animation-delay: 2s;
+}
+
+.letter {
+    top: 15%;
+    left: 75%;
+    animation-delay: 4s;
+}
+
+@keyframes floaty {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar {
     width: 6px;
