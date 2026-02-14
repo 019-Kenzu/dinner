@@ -1,0 +1,161 @@
+/* Scene 2: Art Gallery Styles */
+
+#scene-2 {
+    background-color: #050505;
+    perspective: 1500px;
+    /* Deep perspective for 3D feel */
+    overflow: hidden;
+    height: 300vh;
+    /* Extra height for scroll duration */
+}
+
+.gallery-viewport {
+    position: fixed;
+    /* Fixed within the scene view for scroll logic */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    transform-style: preserve-3d;
+    pointer-events: none;
+    /* Let clicks pass to active elements */
+}
+
+/* The "World" moving towards the camera */
+.gallery-corridor {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform-style: preserve-3d;
+    width: 0;
+    height: 0;
+}
+
+/* Floor Reflection */
+.gallery-floor {
+    position: absolute;
+    top: 500px;
+    left: -50vw;
+    width: 100vw;
+    height: 4000px;
+    background: linear-gradient(to bottom, #111 0%, #000 80%);
+    transform: rotateX(90deg) translateZ(0px);
+    /* Flat floor */
+    transform-origin: center top;
+    opacity: 0.3;
+    mask-image: linear-gradient(to bottom, transparent 0%, black 20%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 20%);
+}
+
+/* Artwork Frames */
+.artwork {
+    position: absolute;
+    width: 400px;
+    height: 500px;
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    transform-style: preserve-3d;
+    overflow: hidden;
+    pointer-events: auto;
+    /* Interactable */
+    cursor: pointer;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.6s ease;
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+}
+
+.artwork:hover {
+    border-color: var(--color-text-primary);
+    box-shadow: 0 0 50px rgba(255, 255, 255, 0.1);
+}
+
+/* Artwork Content */
+.artwork-inner {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    filter: grayscale(100%) brightness(0.6);
+    transition: filter 0.8s ease;
+}
+
+.artwork:hover .artwork-inner {
+    filter: grayscale(0%) brightness(1);
+}
+
+.artwork-caption {
+    position: absolute;
+    bottom: -80px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: all 0.5s ease;
+}
+
+.artwork:hover .artwork-caption {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.artwork-title {
+    font-family: var(--font-serif-title);
+    color: var(--color-text-primary);
+    font-size: 1.5rem;
+}
+
+.artwork-artist {
+    font-family: var(--font-sans);
+    color: var(--color-text-secondary);
+    font-size: 0.8rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+}
+
+/* Light Beams (Pseudo-elements on frames) */
+.artwork::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s;
+    mix-blend-mode: screen;
+}
+
+.artwork:hover::after {
+    opacity: 1;
+}
+
+/* Fullscreen Modal */
+.gallery-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 500;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.8s ease;
+}
+
+.gallery-modal.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-img {
+    max-height: 80vh;
+    max-width: 80vw;
+    box-shadow: 0 0 100px rgba(0, 0, 0, 0.8);
+}

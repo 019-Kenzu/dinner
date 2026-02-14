@@ -1,0 +1,187 @@
+/* Global CSS Variables & Reset */
+:root {
+    /* Colors */
+    --color-bg-primary: #0a0a0a;   /* Matte Black */
+    --color-bg-secondary: #1a1a1a; /* Charcoal */
+    --color-accent-red: #4a0404;   /* Deep Wine Red */
+    --color-accent-gold: #d4af37;  /* Warm Gold */
+    --color-text-primary: #e0e0e0; /* Ivory/Off-white */
+    --color-text-secondary: #a0a0a0;
+    --color-glow: rgba(212, 175, 55, 0.3);
+
+    /* Typography */
+    --font-serif-title: 'Playfair Display', serif;
+    --font-serif-body: 'Cormorant Garamond', serif;
+    --font-sans: 'Inter', sans-serif;
+
+    /* Spacing & Layout */
+    --spacing-unit: 8px;
+    --scene-padding: 80px;
+    --z-index-loader: 1000;
+    --z-index-ui: 500;
+    --z-index-content: 100;
+    --z-index-canvas: 50;
+
+    /* Transitions */
+    --transition-slow: 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+    --transition-medium: 0.5s ease-out;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--color-bg-primary);
+    color: var(--color-text-primary);
+    font-family: var(--font-sans);
+    overflow-x: hidden; /* Prevent horizontal scroll */
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+}
+::-webkit-scrollbar-track {
+    background: var(--color-bg-primary);
+}
+::-webkit-scrollbar-thumb {
+    background: var(--color-bg-secondary);
+    border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--color-accent-gold);
+}
+
+/* Loader */
+.loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: var(--z-index-loader);
+    transition: opacity 1s ease-out, visibility 1s;
+}
+
+.loader.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.loader-title {
+    font-family: var(--font-serif-title);
+    font-size: 3rem;
+    color: var(--color-accent-gold);
+    letter-spacing: 0.2em;
+    opacity: 0;
+    animation: fadeIn 2s forwards;
+    text-transform: uppercase;
+}
+
+.loader-progress {
+    width: 0%;
+    height: 2px;
+    background: var(--color-accent-gold);
+    position: absolute;
+    bottom: 45%;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 200px;
+}
+
+/* Main Container */
+#app {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+}
+
+/* Audio Control */
+.audio-control {
+    position: fixed;
+    bottom: 40px;
+    right: 40px;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.1);
+    color: var(--color-accent-gold);
+    padding: 12px 24px;
+    border-radius: 30px;
+    cursor: pointer;
+    z-index: var(--z-index-ui);
+    font-family: var(--font-sans);
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+}
+
+.audio-control:hover {
+    background: rgba(212, 175, 55, 0.1);
+    border-color: var(--color-accent-gold);
+    box-shadow: 0 0 15px var(--color-glow);
+}
+
+/* Generic Scene Styles */
+.scene {
+    position: relative;
+    min-height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    padding: var(--scene-padding);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.webgl-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: var(--z-index-canvas);
+    pointer-events: none; /* Let clicks pass through to UI if needed */
+}
+
+.scene-content {
+    position: relative;
+    z-index: var(--z-index-content);
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Cinematic Utilities */
+.u-cinematic-title {
+    font-family: var(--font-serif-title);
+    font-size: 4rem;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    color: var(--color-text-primary);
+    text-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+
+.u-serif-body {
+    font-family: var(--font-serif-body);
+    font-size: 1.25rem;
+    font-style: italic;
+    color: var(--color-text-secondary);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    to { opacity: 1; }
+}

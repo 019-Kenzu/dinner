@@ -1,0 +1,107 @@
+
+// Import Scene Modules (assuming module support)
+import Scene1 from './Scene1.js';
+import Scene2 from './Scene2.js';
+import Scene3 from './Scene3.js';
+import AudioController from './AudioController.js';
+
+class Main {
+    constructor() {
+        this.scenes = {
+            scene1: new Scene1(),
+            scene2: new Scene2(),
+            scene3: new Scene3()
+        };
+        this.audioController = new AudioController();
+        this.currentScene = null;
+        
+        this.init();
+    }
+
+    init() {
+        console.log("Initializing Dinner With You...");
+
+        // Setup Audio Toggle
+        const audioBtn = document.getElementById('audio-toggle');
+        if (audioBtn) {
+            audioBtn.addEventListener('click', () => this.toggleAudio());
+        }
+
+        // Simulate assets loading
+        this.loadAssets().then(() => {
+            this.hideLoader();
+            this.startExperience();
+        });
+    }
+
+    async loadAssets() {
+        // In a real app, we'd wait for images/textures here.
+        // For now, simulate a delay for the "film" loading feel.
+        return new Promise(resolve => setTimeout(resolve, 2000));
+    }
+
+    hideLoader() {
+        const loader = document.getElementById('loader');
+        const progress = document.querySelector('.loader-progress');
+        
+        if (progress) {
+            gsap.to(progress, { width: '100%', duration: 0.5, onComplete: () => {
+                gsap.to(loader, {
+                    opacity: 0,
+                    duration: 1,
+                    onComplete: () => loader.classList.add('hidden')
+                });
+            }});
+        }
+    }
+
+    startExperience() {
+        // Initialize GSAP ScrollTrigger
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Init scenes
+        this.scenes.scene1.init();
+        this.scenes.scene2.init();
+        this.scenes.scene3.init();
+
+        // Setup global scroll-based scene transitions or logic if needed
+        // For now, each scene handles its own internal logic.
+        this.observeScenes();
+    }
+
+    observeScenes() {
+        // logic to detect which scene is active for audio crossfading
+        const sections = document.querySelectorAll('.scene');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const sceneId = entry.target.id; // e.g., 'scene-1'
+                    const sceneKey = 'scene' + sceneId.split('-')[1]; // 'scene1'
+                    
+                    console.log(`Entering ${sceneKey}`);
+                    // Tell audio controller to switch theme, etc.
+                    this.audioController.switchTheme(sceneKey);
+                }
+            });
+        }, { threshold: 0.5 }); // Trigger when 50% visible
+
+        sections.forEach(section => observer.observe(section));
+    }
+
+    toggleAudio() {
+        const btn = document.getElementById('audio-toggle');
+        const isMuted = this.audioController.toggleMute();
+        
+        if (btn) {
+            const textSpan = btn.querySelector('.audio-text');
+            if (textSpan) textSpan.textContent = isMuted ? "Sound Off" : "Sound On";
+            btn.classList.toggle('muted', isMuted);
+        }
+    }
+}
+
+// Start
+window.addEventListener('DOMContentLoaded', () => {
+   window.app = new Main();
+});
