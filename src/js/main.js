@@ -67,30 +67,6 @@ class Main {
         this.scenes.scene2.init();
         this.scenes.scene3.init();
         this.scenes.footer.init();
-
-        // Setup global scroll-based scene transitions or logic if needed
-        // For now, each scene handles its own internal logic.
-        this.observeScenes();
-    }
-
-    observeScenes() {
-        // logic to detect which scene is active for audio crossfading
-        const sections = document.querySelectorAll('.scene');
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const sceneId = entry.target.id; // e.g., 'scene-1'
-                    const sceneKey = 'scene' + sceneId.split('-')[1]; // 'scene1'
-
-                    console.log(`Entering ${sceneKey}`);
-                    // Tell audio controller to switch theme, etc.
-                    this.audioController.switchTheme(sceneKey);
-                }
-            });
-        }, { threshold: 0.5 }); // Trigger when 50% visible
-
-        sections.forEach(section => observer.observe(section));
     }
 
     toggleAudio() {

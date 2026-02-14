@@ -12,7 +12,6 @@ export default class Scene2 {
         console.log("Initializing Scene 2: Art Gallery");
         this.renderHTML();
         this.initScrollSync();
-        this.initInteractions();
     }
 
     renderHTML() {

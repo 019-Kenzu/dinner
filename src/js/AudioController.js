@@ -1,54 +1,92 @@
-
 export default class AudioController {
     constructor() {
+        this.createDebugUI();
         this.muted = true;
-        this.currentTheme = null;
-        this.context = null;
-
-        // Defined Placeholders
-        this.tracks = {
-            dinner: 'assets/audio/jazz-ambience-placeholder.mp3',
-            gallery: 'assets/audio/gallery-echo-placeholder.mp3',
-            poetry: 'assets/audio/night-wind-placeholder.mp3'
-        };
+        this.isUnlocked = false;
+        this.trackPath = 'src/assets/audio/Autum-Leaves.mp3';
+        this.audio = null;
 
         this.init();
+        this.setupUnlock();
+    }
+
+    createDebugUI() {
+        window._audioDebug = (msg) => {
+            console.log(`%c[Audio Debug] ${msg}`, "color: #ffcc00; font-weight: bold;");
+        };
     }
 
     init() {
-        console.log("Audio Controller: Ready [Muted by default]");
+        window._audioDebug("Initializing single-track mode...");
+        this.audio = new Audio(this.trackPath);
+        this.audio.loop = true;
+        this.audio.volume = 0;
+
+        this.audio.addEventListener('error', () => {
+            window._audioDebug(`❌ Error loading audio: ${this.trackPath}`);
+        });
+
+        this.audio.addEventListener('canplaythrough', () => {
+            window._audioDebug(`✅ Audio ready: ${this.trackPath}`);
+        });
+    }
+
+    setupUnlock() {
+        const unlock = () => {
+            if (this.isUnlocked) return;
+            this.isUnlocked = true;
+            window._audioDebug("🔓 Interaction detected - Audio unlocked");
+
+            if (!this.muted) {
+                this.startPlayback();
+            }
+
+            ['click', 'touchstart', 'keydown'].forEach(evt =>
+                window.removeEventListener(evt, unlock)
+            );
+        };
+
+        ['click', 'touchstart', 'keydown'].forEach(evt =>
+            window.addEventListener(evt, unlock)
+        );
     }
 
     toggleMute() {
         this.muted = !this.muted;
-        console.log(`Audio System: ${this.muted ? 'Muted' : 'Unmuted'}`);
+        window._audioDebug(`🔊 System ${this.muted ? 'MUTED' : 'UNMUTED'}`);
 
-        if (!this.muted) {
-            console.log("Audio Context would start here in production.");
-            this.playTheme(this.currentTheme);
+        if (this.muted) {
+            this.stopPlayback();
+        } else {
+            this.startPlayback();
         }
         return this.muted;
     }
 
-    switchTheme(sceneName) {
-        if (this.currentTheme === sceneName) return;
+    startPlayback() {
+        if (!this.audio || this.muted) return;
 
-        const prevTheme = this.currentTheme;
-        this.currentTheme = sceneName;
-
-        console.log(`Audio System: Transitioning Logic | OUT: ${prevTheme ? this.tracks[prevTheme] : 'None'} | IN: ${this.tracks[sceneName]}`);
+        window._audioDebug(`🎵 Starting playback...`);
+        this.audio.play().then(() => {
+            window._audioDebug(`▶️ Playing Autumn Leaves`);
+            gsap.to(this.audio, {
+                volume: 0.5,
+                duration: 3,
+                ease: "linear"
+            });
+        }).catch(e => {
+            window._audioDebug(`⚠️ Play blocked. Waiting for interaction.`);
+        });
     }
 
-    playTheme(name) {
-        if (!name || this.muted) return;
-        console.log(`Audio System: Playing Loop -> ${this.tracks[name]}`);
-    }
-
-    fadeIn(name) {
-        // Placeholder logic for fade
-    }
-
-    fadeOut(name) {
-        // Placeholder logic for fade
+    stopPlayback() {
+        if (!this.audio) return;
+        window._audioDebug(`🔇 Stopping playback...`);
+        gsap.to(this.audio, {
+            volume: 0,
+            duration: 2,
+            ease: "linear",
+            onComplete: () => this.audio.pause()
+        });
     }
 }
